@@ -19,9 +19,10 @@ class AdminJadwalController extends Controller
 
     public function create()
     {
+        $guru = User::all();
         $mapel = Mapel::all();
         $kelas = Kelas::selectRaw('DISTINCT kelas')->pluck('kelas');
-        return view('admin.jadwal.create', compact('mapel', 'kelas'));
+        return view('admin.jadwal.create', compact('mapel', 'kelas','guru'));
     }
 
     public function store(Request $request)
@@ -30,21 +31,29 @@ class AdminJadwalController extends Controller
             'hari' => 'required',
             'jam_mulai' => 'required',
             'jam_selesai' => 'required',
-            'mapel' => 'required|string|max:255',
+            'mapel_id' => 'required|exists:mapel,mapel_id',
             'kelas_id' => 'required|exists:kelas,kelas_id',
-            'guru_id' => 'required|exists:guru,guru_id',
+            'guru_id' => 'required|exists:users,id',
         ]);
 
-        Jadwal::create($request->all());
+        Jadwal::create([
+            'mapel_id' => $request->mapel_id,
+            'guru_id' => $request->guru_id,
+            'kelas_id' => $request->kelas_id,
+            'hari' => $request->hari,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+        ]);
         return redirect()->route('admin.jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
         $jadwal = Jadwal::findOrFail($id);
+        $mapel = Mapel::all();
         $kelas = Kelas::all();
         $guru = User::all();
-        return view('admin.jadwal.edit', compact('jadwal', 'kelas', 'guru'));
+        return view('admin.jadwal.edit', compact('jadwal', 'kelas', 'guru', 'mapel'));
     }
 
     public function update(Request $request, $id)
@@ -53,9 +62,9 @@ class AdminJadwalController extends Controller
             'hari' => 'required',
             'jam_mulai' => 'required',
             'jam_selesai' => 'required',
-            'mapel' => 'required|string|max:255',
+            'mapel_id' => 'required|exists:mapel,mapel_id',
             'kelas_id' => 'required|exists:kelas,kelas_id',
-            'guru_id' => 'required|exists:guru,guru_id',
+            'guru_id' => 'required|exists:users,id',
         ]);
 
         $jadwal = Jadwal::findOrFail($id);

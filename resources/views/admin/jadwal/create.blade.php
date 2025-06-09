@@ -39,14 +39,17 @@
 
             <div class="mb-3">
                 <label>Guru</label>
-                <select name="guru_id" id="guru_id" class="form-control" required>
+                <select name="guru_id" class="form-control" required>
                     <option value="">-- Pilih Guru --</option>
+                    @foreach ($guru as $g)
+                        <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <div class="mb-3">
                 <label>Kelas</label>
-                <select name="kelas" id="kelas" class="form-control" required>
+                <select id="kelas" class="form-control" required>
                     <option value="">-- Pilih Kelas --</option>
                     @foreach($kelas as $k)
                         <option value="{{ $k }}">{{ $k }}</option>
@@ -65,19 +68,6 @@
         </form>
     </div>
     <script>
-        document.getElementById('mapel_id').addEventListener('change', function () {
-            let mapelId = this.value;
-            fetch(`/admin/jadwal/guru-by-mapel/${mapelId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let guruSelect = document.getElementById('guru_id');
-                    guruSelect.innerHTML = '<option value="">-- Pilih Guru --</option>';
-                    data.forEach(guru => {
-                        guruSelect.innerHTML += `<option value="${guru.guru_id}">${guru.nama}</option>`;
-                    });
-                });
-        });
-
         document.getElementById('kelas').addEventListener('change', function () {
             let kelas = this.value;
             fetch(`/admin/jadwal/sub-kelas/${kelas}`)

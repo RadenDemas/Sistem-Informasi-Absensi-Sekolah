@@ -29,25 +29,48 @@
 
             <div class="mb-3">
                 <label>Mata Pelajaran</label>
-                <input type="text" name="mapel" class="form-control" value="{{ $jadwal->mapel }}" required>
-            </div>
-
-            <div class="mb-3">
-                <label>Kelas</label>
-                <select name="kelas_id" class="form-control" required>
-                    @foreach ($kelas as $k)
-                        <option value="{{ $k->kelas_id }}" {{ $jadwal->kelas_id == $k->kelas_id ? 'selected' : '' }}>
-                            {{ $k->kelas }} - {{ $k->sub_kelas }}
+                <select name="mapel_id" id="mapel_id" class="form-control" required>
+                    <option value="">-- Pilih Mapel --</option>
+                    @foreach($mapel as $m)
+                        <option value="{{ $m->mapel_id }}" {{ $jadwal->mapel_id == $m->mapel_id ? 'selected' : '' }}>
+                            {{ $m->nama_mapel }}
                         </option>
                     @endforeach
                 </select>
             </div>
 
             <div class="mb-3">
+                <label>Kelas</label>
+                <select id="kelas" class="form-control" required>
+                    <option value="">-- Pilih Kelas --</option>
+                    @foreach($kelas->groupBy('kelas') as $k => $group)
+                        <option value="{{ $k }}" {{ $group->contains('kelas_id', $jadwal->kelas_id) ? 'selected' : '' }}>
+                            {{ $k }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Sub Kelas</label>
+                <select name="kelas_id" id="sub_kelas" class="form-control" required>
+                    <option value="">-- Pilih Sub Kelas --</option>
+                    @foreach($kelas as $k)
+                        @if($k->kelas == $jadwal->kelas->kelas)
+                            <option value="{{ $k->kelas_id }}" {{ $k->kelas_id == $jadwal->kelas_id ? 'selected' : '' }}>
+                                {{ $k->kelas }} - {{ $k->sub_kelas }}
+                            </option>
+                        @endif
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-3">
                 <label>Guru</label>
-                <select name="guru_id" class="form-control" required>
+                <select name="guru_id" id="guru_id" class="form-control" required>
+                    <option value="">-- Pilih Guru --</option>
                     @foreach ($guru as $g)
-                        <option value="{{ $g->guru_id }}" {{ $jadwal->guru_id == $g->guru_id ? 'selected' : '' }}>
+                        <option value="{{ $g->id }}" {{ $jadwal->guru_id == $g->id ? 'selected' : '' }}>
                             {{ $g->nama }}
                         </option>
                     @endforeach
@@ -57,32 +80,32 @@
             <button class="btn btn-primary">Update</button>
         </form>
     </div>
+
+    <script>
+        document.getElementById('kelas').addEventListener('change', function () {
+            let kelas = this.value;
+            fetch(`/admin/jadwal/sub-kelas/${kelas}`)
+                .then(response => response.json())
+                .then(data => {
+                    let subKelasSelect = document.getElementById('sub_kelas');
+                    subKelasSelect.innerHTML = '<option value="">-- Pilih Sub Kelas --</option>';
+                    data.forEach(k => {
+                        subKelasSelect.innerHTML += `<option value="${k.kelas_id}">${k.kelas} - ${k.sub_kelas}</option>`;
+                    });
+                });
+        });
+
+        document.getElementById('mapel_id').addEventListener('change', function () {
+            let mapelId = this.value;
+            fetch(`/admin/jadwal/guru-by-mapel/${mapelId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let guruSelect = document.getElementById('guru_id');
+                    guruSelect.innerHTML = '<option value="">-- Pilih Guru --</option>';
+                    data.forEach(guru => {
+                        guruSelect.innerHTML += `<option value="${guru.id}">${guru.nama}</option>`;
+                    });
+                });
+        });
+    </script>
 @endsection
-
-<script>
-    document.getElementById('mapel_id').addEventListener('change', function () {
-        let mapelId = this.value;
-        fetch(`/admin/jadwal/guru-by-mapel/${mapelId}`)
-            .then(response => response.json())
-            .then(data => {
-                let guruSelect = document.getElementById('guru_id');
-                guruSelect.innerHTML = '<option value="">-- Pilih Guru --</option>';
-                data.forEach(guru => {
-                    guruSelect.innerHTML += `<option value="${guru.guru_id}">${guru.nama}</option>`;
-                });
-            });
-    });
-
-    document.getElementById('kelas').addEventListener('change', function () {
-        let kelas = this.value;
-        fetch(`/admin/jadwal/sub-kelas/${kelas}`)
-            .then(response => response.json())
-            .then(data => {
-                let subKelasSelect = document.getElementById('sub_kelas');
-                subKelasSelect.innerHTML = '<option value="">-- Pilih Sub Kelas --</option>';
-                data.forEach(k => {
-                    subKelasSelect.innerHTML += `<option value="${k.kelas_id}">${k.kelas} - ${k.sub_kelas}</option>`;
-                });
-            });
-    });
-</script>
