@@ -13,7 +13,19 @@ class AdminJadwalController extends Controller
 {
     public function index(Request $request)
     {
-        $jadwal = Jadwal::with(['kelas', 'guru'])->latest()->paginate(10);
+        $keyword = $request->input('search');
+
+        $jadwal = Jadwal::with(['mapel', 'kelas', 'guru'])
+            ->when($keyword, function ($query, $keyword) {
+                $query->whereHas('mapel', function ($q) use ($keyword) {
+                    $q->where('nama_mapel', 'like', "%{$keyword}%");
+                })->orWhereHas('guru', function ($q) use ($keyword) {
+                    $q->where('nama', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderBy('hari')
+            ->paginate(10);
+
         return view('admin.jadwal.index', compact('jadwal'));
     }
 
