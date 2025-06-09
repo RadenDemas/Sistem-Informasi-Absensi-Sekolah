@@ -94,6 +94,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/siswa/export-excel', [AdminSiswaController::class, 'exportExcel'])->name('admin.siswa.export-excel');
     Route::post('/admin/guru/import', [AdminGuruController::class, 'import'])->name('admin.guru.import');
     Route::get('/admin/guru/export-excel', [AdminGuruController::class, 'exportExcel'])->name('admin.guru.export-excel');
+    Route::get('/admin/jadwal/export-excel', [AdminJadwalController::class, 'exportExcel'])->name('admin.jadwal.exportExcel');
 });
 
 Route::middleware(['auth', 'role:kepala_sekolah'])->group(function () {

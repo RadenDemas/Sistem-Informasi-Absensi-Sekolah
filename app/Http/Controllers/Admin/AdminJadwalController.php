@@ -8,6 +8,9 @@ use App\Models\Jadwal;
 use App\Models\Kelas;
 use App\Models\User;
 use App\Models\Mapel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Response;
 
 class AdminJadwalController extends Controller
 {
@@ -100,5 +103,41 @@ class AdminJadwalController extends Controller
     {
         $subKelas = Kelas::where('kelas', $kelas)->get();
         return response()->json($subKelas);
+    }
+
+    public function exportExcel()
+    {
+        $jadwal = Jadwal::with(['guru', 'mapel'])->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Header
+        $sheet->setCellValue('A1', 'Nama Guru');
+        $sheet->setCellValue('B1', 'Mata Pelajaran');
+        $sheet->setCellValue('C1', 'Hari');
+        $sheet->setCellValue('D1', 'Jam Mulai');
+        $sheet->setCellValue('E1', 'Jam Selesai');
+
+        // Data
+        $row = 2;
+        foreach ($jadwal as $data) {
+            $sheet->setCellValue("A$row", $data->guru->nama);
+            $sheet->setCellValue("B$row", $data->mapel->nama_mapel);
+            $sheet->setCellValue("C$row", $data->hari);
+            $sheet->setCellValue("D$row", $data->jam_mulai);
+            $sheet->setCellValue("E$row", $data->jam_selesai);
+            $row++;
+        }
+
+        // Download response
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'jadwal_guru.xlsx';
+
+        // Output ke browser
+        $tempFile = tempnam(sys_get_temp_dir(), 'jadwal');
+        $writer->save($tempFile);
+
+        return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
     }
 }

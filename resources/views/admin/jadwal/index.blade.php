@@ -12,7 +12,9 @@
                 <button type="submit" class="btn btn-primary">Cari</button>
             </div>
         </form>
-
+        <a href="{{ route('admin.jadwal.exportExcel') }}" class="btn btn-success mb-3">
+            Download Jadwal
+        </a>
         <table class="table table-bordered">
             <thead>
             <tr>
