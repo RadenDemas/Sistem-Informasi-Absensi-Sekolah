@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminGuruController;
 use App\Http\Controllers\Admin\AdminKelasController;
 use App\Http\Controllers\Admin\AdminSiswaController;
+use App\Http\Controllers\Admin\AdminJadwalController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\BkController;
 use App\Http\Controllers\GuruController;
@@ -83,9 +84,12 @@ Route::middleware(['auth', 'role:wakasek_kurikulum'])->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::resource('admin/guru', AdminGuruController::class)->names('admin.guru')->except('show');
-    Route::resource('admin/kelas', AdminKelasController::class)->names('admin.kelas')->except('show');
+    Route::resource('/admin/guru', AdminGuruController::class)->names('admin.guru')->except('show');
+    Route::resource('/admin/kelas', AdminKelasController::class)->names('admin.kelas')->except('show');
     Route::resource('/admin/siswa', AdminSiswaController::class)->names('admin.siswa')->except('show');
+    Route::resource('admin/jadwal', AdminJadwalController::class)->names('admin.jadwal')->except('show');
+    Route::get('/admin/jadwal/guru-by-mapel/{mapel_id}', [AdminJadwalController::class, 'getGuruByMapel']);
+    Route::get('/admin/jadwal/sub-kelas/{kelas}', [AdminJadwalController::class, 'getSubKelas']);
     Route::post('/admin/siswa/import', [AdminSiswaController::class, 'import'])->name('admin.siswa.import');
     Route::get('/admin/siswa/export-excel', [AdminSiswaController::class, 'exportExcel'])->name('admin.siswa.export-excel');
     Route::post('/admin/guru/import', [AdminGuruController::class, 'import'])->name('admin.guru.import');

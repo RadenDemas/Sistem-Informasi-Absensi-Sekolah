@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('nip')->unique();
-            $table->enum('role', ['guru_pengajar', 'guru_bk', 'admin', 'wakasek_kesiswaan', 'wakasek_kurikulum'])->default('guru_pengajar');
+            $table->enum('role', ['guru_pengajar', 'guru_bk', 'admin', 'wakasek_kesiswaan', 'wakasek_kurikulum','kepala_sekolah'])->default('guru_pengajar');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
