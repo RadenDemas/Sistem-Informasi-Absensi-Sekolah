@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Controllers\AdminKelasController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminGuruController;
+use App\Http\Controllers\Admin\AdminKelasController;
+use App\Http\Controllers\Admin\AdminSiswaController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\BkController;
+use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KepalaSekolahController;
 use App\Http\Controllers\WakasekKesiswaanController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AbsensiSiswaController;
-use App\Http\Controllers\GuruController;
-use App\Http\Controllers\BkDashboardController;
 use App\Http\Controllers\WakasekKurikulumController;
-use App\Http\Controllers\AdminGuruController;
-use App\Http\Controllers\AdminSiswaController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
@@ -47,18 +47,18 @@ Route::middleware(['auth', 'role:guru_pengajar'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:guru_bk'])->group(function () {
-    Route::get('/bk/dashboard', [BkDashboardController::class, 'index'])->name('bk.dashboard');
-    Route::get('/bk/kelas', [AbsensiSiswaController::class, 'kelasList'])->name('bk.kelas');
-    Route::get('/bk/kelas/{kelas}/sub', [AbsensiSiswaController::class, 'listSubKelas'])->name('bk.kelas.listSub');
-    Route::get('bk/absensi-kelas/{kelas_id}', [AbsensiSiswaController::class, 'listAbsensiByKelas'])->name('bk.kelas.detail');
-    Route::get('/bk/absensi-kelas/{kelas_id}/tanggal/{tanggal}', [AbsensiSiswaController::class, 'listByTanggal'])->name('bk.kelas.tanggal');
-    Route::get('/bk/absensi/create/{siswa_id}/{tanggal}', [AbsensiSiswaController::class, 'create'])->name('bk.absensi.create');
-    Route::post('/bk/absensi/store', [AbsensiSiswaController::class, 'store'])->name('bk.absensi.store');
-    Route::get('/bk/absensi/{id}/edit', [AbsensiSiswaController::class, 'edit'])->name('bk.absensi.edit');
-    Route::put('/bk/absensi/{id}', [AbsensiSiswaController::class, 'update'])->name('bk.absensi.update');
-    Route::get('/bk/monitoring-bolos', [BkDashboardController::class,'bolos'])->name('bk.bolos.index');
-    Route::get('/bk/rekap-data-siswa',[AbsensiSiswaController::class,'rekap'])->name('bk.rekap.data');
-    Route::get('/bk/rekap-data-siswa/download',[AbsensiSiswaController::class,'downloadRekap'])->name('bk.rekap.data.download');
+    Route::get('/bk/dashboard', [BkController::class, 'index'])->name('bk.dashboard');
+    Route::get('/bk/kelas', [BkController::class, 'kelasList'])->name('bk.kelas');
+    Route::get('/bk/kelas/{kelas}/sub', [BkController::class, 'listSubKelas'])->name('bk.kelas.listSub');
+    Route::get('bk/absensi-kelas/{kelas_id}', [BkController::class, 'listAbsensiByKelas'])->name('bk.kelas.detail');
+    Route::get('/bk/absensi-kelas/{kelas_id}/tanggal/{tanggal}', [BkController::class, 'listByTanggal'])->name('bk.kelas.tanggal');
+    Route::get('/bk/absensi/create/{siswa_id}/{tanggal}', [BkController::class, 'create'])->name('bk.absensi.create');
+    Route::post('/bk/absensi/store', [BkController::class, 'store'])->name('bk.absensi.store');
+    Route::get('/bk/absensi/{id}/edit', [BkController::class, 'edit'])->name('bk.absensi.edit');
+    Route::put('/bk/absensi/{id}', [BkController::class, 'update'])->name('bk.absensi.update');
+    Route::get('/bk/monitoring-bolos', [BkController::class,'bolos'])->name('bk.bolos.index');
+    Route::get('/bk/rekap-data-siswa',[BkController::class,'rekap'])->name('bk.rekap.data');
+    Route::get('/bk/rekap-data-siswa/download',[BkController::class,'downloadRekap'])->name('bk.rekap.data.download');
 });
 
 Route::middleware(['auth', 'role:wakasek_kesiswaan'])->group(function () {
@@ -82,7 +82,7 @@ Route::middleware(['auth', 'role:wakasek_kurikulum'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', fn() => view('admin.dashboard'));
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('admin/guru', AdminGuruController::class)->names('admin.guru')->except('show');
     Route::resource('admin/kelas', AdminKelasController::class)->names('admin.kelas')->except('show');
     Route::resource('/admin/siswa', AdminSiswaController::class)->names('admin.siswa')->except('show');

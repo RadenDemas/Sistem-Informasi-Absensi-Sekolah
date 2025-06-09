@@ -2,18 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AbsensiSiswa;
+use App\Models\Bolos;
 use App\Models\Kelas;
 use App\Models\Siswa;
-use App\Models\AbsensiSiswa;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Bolos;
+use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Illuminate\Support\Facades\Response;
 
-class AbsensiSiswaController extends Controller
+class BkController extends Controller
 {
+    public function index()
+    {
+        $tingkatKelas = Kelas::select('kelas')->distinct()->get();
+        return view('bk.dashboard', compact('tingkatKelas'));
+    }
+    public function bolos(Request $request){
+        $tanggal = $request->input('tanggal', now()->toDateString());
+
+        $bolos = Bolos::with(['siswa.kelas', 'jadwal.mapel'])
+            ->whereDate('created_at', $tanggal)
+            ->get();
+
+        return view('bk.bolos.index', compact('bolos', 'tanggal'));
+    }
+
     public function kelasList()
     {
         $kelasGroup = Kelas::select('kelas')->distinct()->get();
