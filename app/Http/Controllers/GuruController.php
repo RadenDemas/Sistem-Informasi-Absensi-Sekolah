@@ -14,9 +14,14 @@ class GuruController extends Controller
 {
     public function index()
     {
-        // Menampilkan kelas 7, 8, 9 (distinct)
-        $tingkat = Kelas::select('kelas')->distinct()->pluck('kelas');
-        return view('guru.dashboard', compact('tingkat'));
+        $tingkatKelas = Kelas::select('kelas')->distinct()->get();
+        return view('guru.dashboard', compact('tingkatKelas'));
+    }
+
+    public function kelasList()
+    {
+        $tingkatKelas = Kelas::select('kelas')->distinct()->get();
+        return view('guru.kelas.index', compact('tingkatKelas'));
     }
 
     public function listSubkelas($tingkat)
@@ -25,7 +30,6 @@ class GuruController extends Controller
         Carbon::setLocale('id');
         $hariIni = $now->translatedFormat('l');
         $guru_id = auth()->user()->id;
-        // Ambil semua jadwal guru pada hari ini untuk tingkat tertentu
         $jadwalHariIni = Jadwal::where('hari', $hariIni)
             ->where('guru_id', $guru_id)
             ->whereHas('kelas', function ($query) use ($tingkat) {
@@ -34,7 +38,6 @@ class GuruController extends Controller
             ->orderBy('jam_mulai')
             ->get();
 
-        // Ambil jam paling awal dari jadwal guru hari ini
         $jamPertama = optional($jadwalHariIni->first())->jam_mulai;
 
         // Ambil semua kelas_id yang sesuai dengan jam pertama (jika ada)
@@ -42,14 +45,9 @@ class GuruController extends Controller
             ->where('jam_mulai', $jamPertama)
             ->pluck('kelas_id');
 
-        // Ambil data kelas sesuai jam pertama
         $subkelas = Kelas::whereIn('kelas_id', $kelasIdJamPertama)->get();
 
-        return view('guru.subkelas', compact('subkelas', 'tingkat'));
-
-        // Ambil semua subkelas dari tingkat tertentu (misal: 7 → 7-1, 7-2)
-//        $subkelas = Kelas::where('kelas', $tingkat)->get();
-//        return view('guru.subkelas', compact('subkelas', 'tingkat'));
+        return view('guru.kelas.subkelas', compact('subkelas', 'tingkat'));
     }
 
     public function absenForm($kelas_id)
@@ -59,7 +57,6 @@ class GuruController extends Controller
 
         $today = Carbon::today();
 
-        // Ambil data absensi hari ini
         $absensiToday = AbsensiSiswa::whereIn('siswa_id', $siswa->pluck('siswa_id'))
             ->whereDate('created_at', $today)
             ->get()
@@ -105,7 +102,7 @@ class GuruController extends Controller
             }
         }
 
-        return redirect()->route('guru.dashboard')->with('success', 'Absensi berhasil disimpan atau diperbarui.');
+        return redirect()->route('guru.dashboard')->with('success', 'Absensi berhasil disimpan.');
     }
     public function getSubkelas($kelas)
     {

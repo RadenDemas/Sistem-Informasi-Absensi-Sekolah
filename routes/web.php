@@ -1,12 +1,12 @@
 <?php
 
+use App\Http\Controllers\BkController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminGuruController;
 use App\Http\Controllers\Admin\AdminKelasController;
 use App\Http\Controllers\Admin\AdminSiswaController;
 use App\Http\Controllers\Admin\AdminJadwalController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\BkController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KepalaSekolahController;
 use App\Http\Controllers\WakasekKesiswaanController;
@@ -29,6 +29,7 @@ Route::get('/', function () {
         'wakasek_kesiswaan' => redirect()->route('wakasek.kesiswaan.dashboard'),
         'wakasek_kurikulum' => redirect()->route('wakasek.kurikulum.dashboard'),
         'admin' => redirect()->route('admin.dashboard'),
+        'kepala_sekolah'=>redirect()->route('kepala.sekolah.dashboard'),
         default => abort(403, 'Role tidak dikenali.'),
     };
 });
@@ -38,7 +39,8 @@ Route::post('/forgot-password/save',[ForgotPasswordController::class,'savePasswo
 
 Route::middleware(['auth', 'role:guru_pengajar'])->group(function () {
     Route::get('/guru/dashboard', [GuruController::class, 'index'])->name('guru.dashboard');
-    Route::get('/guru/kelas/{tingkat}', [GuruController::class, 'listSubkelas'])->name('guru.kelas.sub');
+    Route::get('/guru/kelas', [GuruController::class, 'kelasList'])->name('guru.kelas');
+    Route::get('/guru/kelas/{tingkat}', [GuruController::class, 'listSubkelas'])->name('guru.kelas.listSub');
     Route::get('/guru/absensi/{kelas_id}', [GuruController::class, 'absenForm'])->name('guru.absen.form');
     Route::post('/guru/absensi/{kelas_id}', [GuruController::class, 'absenSimpan'])->name('guru.absen.simpan');
     Route::get('/guru/form-bolos', [GuruController::class, 'formBolos'])->name('guru.form.bolos');
@@ -98,17 +100,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:kepala_sekolah'])->group(function () {
-    Route::get('/kepala-sekolah/dashboard',[KepalaSekolahController::class, 'index'])->name('kepala.sekolah');
+    Route::get('/kepala-sekolah/dashboard',[KepalaSekolahController::class, 'index'])->name('kepala.sekolah.dashboard');
     Route::get('/kepala-sekolah/kelas', [KepalaSekolahController::class, 'kelasList'])->name('kepala.sekolah.kelas');
     Route::get('/kepala-sekolah/kelas/{kelas}/sub', [KepalaSekolahController::class, 'listSubKelas'])->name('kepala.sekolah.kelas.listSub');
     Route::get('/kepala-sekolah/absensi-kelas/{kelas_id}', [KepalaSekolahController::class, 'listAbsensiByKelas'])->name('kepala.sekolah.kelas.detail');
     Route::get('/kepala-sekolah/absensi-kelas/{kelas_id}/tanggal/{tanggal}', [KepalaSekolahController::class, 'listByTanggal'])->name('kepala.sekolah.kelas.tanggal');
     Route::get('/kepala-sekolah/monitoring-bolos', [KepalaSekolahController::class,'bolos'])->name('kepala.sekolah.bolos.index');
-    Route::get('/kepala-sekolah/rekap-data-siswa',[KepalaSekolahController::class,'rekap'])->name('kepala.sekolah.rekap.data');
-    Route::get('/kepala-sekolah/rekap-data-siswa/download',[KepalaSekolahController::class,'downloadRekap'])->name('kepala.sekolah.rekap.data.siswa.download');
+    Route::get('/kepala-sekolah/rekap-data-siswa',[KepalaSekolahController::class,'rekapSiswa'])->name('kepala.sekolah.rekap.data.siswa');
+    Route::get('/kepala-sekolah/rekap-data-siswa/download',[KepalaSekolahController::class,'downloadRekapSiswa'])->name('kepala.sekolah.rekap.data.siswa.download');
     Route::get('/kepala-sekolah/monitoring-guru', [KepalaSekolahController::class, 'monitoringGuru'])->name('kepala.sekolah.monitoring.guru');
-    Route::get('/kepala-sekolah/rekap-absensi-guru', [KepalaSekolahController::class, 'rekap'])->name('kepala.sekolah.rekap.data');
-    Route::get('/kepala-sekolah/rekap-absensi-guru/download', [KepalaSekolahController::class, 'downloadRekap'])->name('kepala.sekolah.rekap.data.guru.download');
+    Route::get('/kepala-sekolah/rekap-absensi-guru', [KepalaSekolahController::class, 'rekapGuru'])->name('kepala.sekolah.rekap.data.guru');
+    Route::get('/kepala-sekolah/rekap-absensi-guru/download', [KepalaSekolahController::class, 'downloadRekapGuru'])->name('kepala.sekolah.rekap.data.guru.download');
 });
 
 Route::get('/test-auth', function () {

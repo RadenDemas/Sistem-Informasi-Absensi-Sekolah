@@ -6,6 +6,301 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Sora', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+:root {
+    --primary : #086805;
+    --secondary : #B0CA2D;
+    --background : #F2F5E0;
+    --accent : #F1EB0F;
+    --text-color : #222;
+    --white : #FFFFFF;
+    --grey : #1e1e1e;
+}
+
+body {
+    font-family: 'Sora', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Styling Navbar */
+body {
+    background-color: var(--background);
+    font-family: 'sora', sans-serif;
+}
+.main-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+.sidebar {
+    width: 260px;
+    background-color:var(--white);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    z-index: 1001;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+}
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.sidebar-header .logo {
+    max-width: 80px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+.sidebar-header h3 {
+    color: #333;
+    font-weight: 600;
+    margin-top: 10px;
+}
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.nav-link i {
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+.nav-link:hover, .nav-link.active {
+    background-color: var(--background);
+    color: var(--primary);
+    border-radius: 15px;
+}
+.content-wrapper {
+    flex-grow: 1;
+    background-color: var(--background);
+}
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--white);
+    padding: 0px 20px;
+    width: 100%;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+}
+main {
+    padding: 30px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -260px;
+    }
+    .sidebar.active {
+        left: 0;
+    }
+    .content-wrapper {
+        width: 100%;
+    }
+    main {
+        padding: 20px;
+    }
+    .top-header {
+        padding: 10px 15px;
+    }
+}
+
+/* button */
+.btn-hijau-sias {
+    background-color: var(--primary);
+    color: var(--white);
+    border-radius: 15px;
+    font-weight: 500;
+    padding: 10px 25px;
+    height: 49px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-hijau-sias:hover {
+    background-color: var(--white);
+    color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-kuning-sias {
+    background-color: var(--accent);
+    color: var(--text-color);
+    border-radius: 15px;
+    font-weight: 500;
+    padding: 10px 25px;
+    height: 45px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-kuning-sias:hover {
+    background-color: var(--white);
+    color: var(--text-color);
+    border-color: var(--accent);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.table-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.thead-secondary th {
+    background-color: var(--secondary);
+    color:var(--text-color);
+    font-weight: 600;
+}
+
+.form-control {
+    border: 1px solid var(--primary);
+    border-radius: 15px;
+    padding: 10px;
+    width: 25%;
+    box-sizing: border-box;
+}
+
+.form-select{
+    border: 1px solid var(--primary);
+    border-radius: 15px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Card Subkelas */
+.subclass-list-card {
+    background-color: var(--white);
+    border-radius: 30px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+}
+.subclass-list-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Absen Form */
+.student-card {
+    background-color: var(--white);
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s ease;
+}
+.student-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.status-radio .form-check-input {
+    display: none;
+}
+.status-radio .form-check-label {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+.status-radio .form-check-input:checked + .form-check-label {
+    color: white;
+}
+/* Warna untuk setiap status */
+.status-radio .form-check-input[value="hadir"]:checked + .form-check-label {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.status-radio .form-check-input[value="sakit"]:checked + .form-check-label {
+    background-color: #ffc107; /* Kuning */
+    border-color: #ffc107;
+    color: #333;
+}
+.status-radio .form-check-input[value="izin"]:checked + .form-check-label {
+    background-color: #0dcaf0; /* Biru muda */
+    border-color: #0dcaf0;
+}
+.status-radio .form-check-input[value="alpha"]:checked + .form-check-label {
+    background-color: #dc3545; /* Merah */
+    border-color: #dc3545;
+}
+.details-section {
+    display: none;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+.btn-submit-fixed {
+    position: sticky;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+    min-width: 200px;
+}
+
+/* Form */
+.form-container-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* CRUD */
+
+.data-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    padding: 2rem;
+}
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+.btn-action {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+.pagination .page-link {
+    color: #1E6042;
+}
+.pagination .page-item.active .page-link {
+    background-color: #1E6042;
+    border-color: #1E6042;
+    color: var(--white);
+}
+.btn-green {
+    background-color: #1E6042;
+    color: white;
+}
+.btn-green:hover {
+    background-color: #15472F;
+    color: white;
+}
+
+.form-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    padding: 2.5rem;
+}
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+}
+.form-label {
+    font-weight: 600;
 }

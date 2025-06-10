@@ -1,21 +1,44 @@
-@extends('layouts.app')
+@extends('layouts.navbarguru')
 
 @section('content')
-    <div class="container">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        <h3>Pilih Tingkat Kelas</h3>
-        <div class="list-group">
-            @foreach($tingkat as $t)
-                <a href="{{ route('guru.kelas.sub', $t) }}" class="list-group-item list-group-item-action">
-                    Kelas {{ $t }}
-                </a>
-            @endforeach
+
+    <style>
+        .class-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .class-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+        }
+    </style>
+
+    <h1 class="h2 mb-4 fw-bold">Dashboard Guru Pengajar</h1>
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
-        <h3>Form Bolos</h3>
-        <a href="{{ route('guru.form.bolos') }}" class="btn btn-secondary mt-3">Form Bolos</a>
+    @endif
+    <h4 class="mt-5 mb-3">Pilih Tingkat Kelas</h4>
+    <div class="row g-4">
+        @isset($tingkatKelas)
+            @forelse ($tingkatKelas as $tingkat)
+                <div class="col-md-4">
+                    <a href="{{ route('guru.kelas.listSub', $tingkat->kelas) }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm class-card" style="border-radius: 15px; border:0;">
+                            <div class="card-body d-flex align-items-center p-4">
+                                <h5 class="card-title mb-0 fw-bold">Kelas {{ $tingkat->kelas }}</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        Tidak ada data tingkat kelas yang tersedia saat ini.
+                    </div>
+                </div>
+            @endforelse
+        @endisset
     </div>
+
 @endsection

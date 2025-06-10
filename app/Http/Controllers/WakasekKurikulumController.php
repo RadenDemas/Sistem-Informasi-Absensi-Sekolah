@@ -15,19 +15,36 @@ class WakasekKurikulumController extends Controller
 {
     public function dashboard()
     {
-        return view('wakasek_kurikulum.dashboard');
+        $guru = User::count();
+        $hadir = AbsensiGuru::whereDate('created_at', Carbon::today())
+            ->where('status', 'hadir')
+            ->count();
+        $izin = AbsensiGuru::whereDate('created_at', Carbon::today())
+            ->where('status', 'izin')
+            ->count();
+        $sakit = AbsensiGuru::whereDate('created_at', Carbon::today())
+            ->where('status', 'sakit')
+            ->count();
+        $alpha = AbsensiGuru::whereDate('created_at', Carbon::today())
+            ->where('status', 'alpha')
+            ->count();
+        return view('wakasek_kurikulum.dashboard',compact('guru','hadir','izin','sakit','alpha'));
     }
 
     public function absenGuruForm()
     {
         $guru = User::all();
-        return view('wakasek_kurikulum.absensi_guru', compact('guru'));
+        $absensiToday = AbsensiGuru::select('guru_id', 'status', 'created_at')
+            ->whereDate('created_at', Carbon::today())
+            ->get()
+            ->unique('guru_id')
+            ->keyBy('guru_id');
+        return view('wakasek_kurikulum.absensi_guru', compact('guru','absensiToday'));
     }
 
     public function simpanAbsenGuru(Request $request)
     {
         $tanggal = Carbon::today()->toDateString();
-
         foreach ($request->guru_id as $index => $id) {
             AbsensiGuru::updateOrCreate(
                 ['guru_id' => $id, 'tanggal' => $tanggal],
@@ -39,17 +56,16 @@ class WakasekKurikulumController extends Controller
             );
         }
 
-        return redirect()->route('wakasek.dashboard')->with('success', 'Absensi guru berhasil disimpan.');
+        return redirect()->route('wakasek.kurikulum.dashboard')->with('success', 'Absensi guru berhasil disimpan.');
     }
 
     public function monitoringGuru(Request $request)
     {
-        // Ambil tanggal dari request atau default hari ini
         $tanggal = $request->input('tanggal', Carbon::today()->format('Y-m-d'));
+        $nama = $request->input('nama');
 
-        // Ambil semua guru (dengan role guru_pengajar), lalu left join dengan absensi_guru
         $data = DB::table('users')
-            ->leftJoin('absensi_guru', function($join) use ($tanggal) {
+            ->leftJoin('absensi_guru', function ($join) use ($tanggal) {
                 $join->on('users.id', '=', 'absensi_guru.guru_id')
                     ->whereDate('absensi_guru.tanggal', '=', $tanggal);
             })
@@ -59,10 +75,15 @@ class WakasekKurikulumController extends Controller
                 'absensi_guru.keterangan',
                 'absensi_guru.bukti'
             )
-            ->get();
+            ->when($nama, function ($query, $nama) {
+                return $query->where('users.nama', 'LIKE', "%{$nama}%");
+            })
+            ->paginate(10);
 
-        return view('wakasek_kurikulum.monitoring_guru', compact('data', 'tanggal'));
+        // Pastikan untuk mengoper semua data request (tanggal, nama) agar pagination melanjutkan query string
+        return view('wakasek_kurikulum.monitoring_guru', compact('data', 'tanggal', 'nama'));
     }
+
     public function rekap(Request $request)
     {
         $bulan = $request->bulan ?? date('m');
@@ -174,7 +195,7 @@ class WakasekKurikulumController extends Controller
                 ->count();
 
             $sheet->setCellValue('A' . $row, $g->nip);
-            $sheet->setCellValue('B' . $row, $g->nama);    
+            $sheet->setCellValue('B' . $row, $g->nama);
             $sheet->setCellValue('C' . $row, $hadir);
             $sheet->setCellValue('D' . $row, $sakit);
             $sheet->setCellValue('E' . $row, $izin);

@@ -15,14 +15,28 @@ class WakasekKesiswaanController extends Controller
 {
     public function index()
     {
+        $siswa = Siswa::count();
+        $hadir = AbsensiSiswa::whereDate('created_at', Carbon::today())
+            ->where('status', 'hadir')
+            ->count();
+        $izin = AbsensiSiswa::whereDate('created_at', Carbon::today())
+            ->where('status', 'izin')
+            ->count();
+        $sakit = AbsensiSiswa::whereDate('created_at', Carbon::today())
+            ->where('status', 'sakit')
+            ->count();
+        $alpha = AbsensiSiswa::whereDate('created_at', Carbon::today())
+            ->where('status', 'alpha')
+            ->count();
+        $bolos = Bolos::whereDate('created_at', Carbon::today())->count();
         $tingkatKelas = Kelas::select('kelas')->distinct()->get();
-        return view('wakasek_kesiswaan.dashboard', compact('tingkatKelas'));
+        return view('wakasek_kesiswaan.dashboard', compact('tingkatKelas', 'siswa', 'hadir', 'izin', 'sakit', 'alpha', 'bolos'));
     }
 
     public function kelasList()
     {
-        $kelasGroup = Kelas::select('kelas')->distinct()->get();
-        return view('wakasek_kesiswaan.kelas.index', compact('kelasGroup'));
+        $tingkatKelas = Kelas::select('kelas')->distinct()->get();
+        return view('wakasek_kesiswaan.kelas.index', compact('tingkatKelas'));
     }
 
     public function listAbsensiByKelas($kelas_id)
@@ -55,7 +69,7 @@ class WakasekKesiswaanController extends Controller
             ->whereDate('created_at', $tanggal)
             ->get();
 
-        return view('wakasek-kesiswaan.bolos.index', compact('bolos', 'tanggal'));
+        return view('wakasek_kesiswaan.bolos.index', compact('bolos', 'tanggal'));
     }
 
     public function rekap(Request $request)

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.navbarbk')
 
 @section('content')
     <div class="container">
@@ -22,18 +22,19 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <input type="text" name="search" value="{{ $search }}" class="form-control" placeholder="Cari nama siswa...">
+                <input type="text" name="search" value="{{ $search }}" class="form-control" style="width: 80%;" placeholder="Cari nama siswa...">
             </div>
             <div class="col-md-2">
-                <button class="btn btn-primary" type="submit">Tampilkan</button>
+                <button class="btn btn-kuning-sias" type="submit">Tampilkan</button>
             </div>
             <div class="col-md-2 text-end">
-                <a href="{{ route('bk.rekap.data.download', ['bulan' => $bulan, 'tahun' => $tahun, 'search' => $search]) }}" class="btn btn-success">Download Data</a>
+                <a href="{{ route('bk.rekap.data.download', ['bulan' => $bulan, 'tahun' => $tahun, 'search' => $search]) }}" class="btn btn-hijau-sias" style="width:fit-content;">Download</a>
             </div>
         </form>
 
-        <table class="table table-bordered">
-            <thead>
+    <div class="table-responsive table-wrapper mb-2">
+        <table class="table table-bordered mb-0">
+            <thead class="thead-secondary">
             <tr>
                 <th>NIS</th>
                 <th>Nama</th>
@@ -60,6 +61,7 @@
             @endforeach
             </tbody>
         </table>
+    </div>
 
         {{ $siswaPaginated->links() }}
     </div>

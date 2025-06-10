@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.navbarkuri')
 
 @section('content')
     <div class="container">
-        <h3>Rekap Kehadiran Siswa</h3>
+        <h3>Rekap Kehadiran Guru</h3>
 
         <form method="GET" class="row mb-4">
             <div class="col-md-2">
@@ -22,41 +22,42 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <input type="text" name="search" value="{{ $search }}" class="form-control" placeholder="Cari nama siswa...">
+                <input type="text" name="search" value="{{ $search }}" class="form-control" style="width: 80%;" placeholder="Cari nama guru...">
             </div>
             <div class="col-md-2">
-                <button class="btn btn-primary" type="submit">Tampilkan</button>
+                <button class="btn btn-kuning-sias" type="submit">Tampilkan</button>
             </div>
             <div class="col-md-2 text-end">
-                <a href="{{ route('wakasek.rekap.data.download', ['bulan' => $bulan, 'tahun' => $tahun, 'search' => $search]) }}" class="btn btn-success">Download Data</a>
+                <a href="{{ route('wakasek.kurikulum.rekap.data.download', ['bulan' => $bulan, 'tahun' => $tahun, 'search' => $search]) }}" class="btn btn-hijau-sias">Download</a>
             </div>
         </form>
 
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>NIS</th>
-                <th>Nama</th>
-                <th>Hadir</th>
-                <th>Sakit</th>
-                <th>Izin</th>
-                <th>Alpha</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($data as $d)
+        <div class="table-responsive table-wrapper mb-2">
+            <table class="table table-bordered mb-0">
+                <thead class="thead-secondary">
                 <tr>
-                    <td>{{ $d['guru']->nip }}</td>
-                    <td>{{ $d['guru']->nama }}</td>
-                    <td>{{ $d['hadir'] }}</td>
-                    <td>{{ $d['sakit'] }}</td>
-                    <td>{{ $d['izin'] }}</td>
-                    <td>{{ $d['alpha'] }}</td>
+                    <th>NIS</th>
+                    <th>Nama</th>
+                    <th>Hadir</th>
+                    <th>Sakit</th>
+                    <th>Izin</th>
+                    <th>Alpha</th>
                 </tr>
-            @endforeach
-            </tbody>
-        </table>
-
+                </thead>
+                <tbody>
+                @foreach ($data as $d)
+                    <tr>
+                        <td>{{ $d['guru']->nip }}</td>
+                        <td>{{ $d['guru']->nama }}</td>
+                        <td>{{ $d['hadir'] }}</td>
+                        <td>{{ $d['sakit'] }}</td>
+                        <td>{{ $d['izin'] }}</td>
+                        <td>{{ $d['alpha'] }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
         {{ $guruPaginated->links() }}
     </div>
 @endsection
